@@ -34,8 +34,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-latest, macos-latest]
-    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"ubuntu-24.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-24.04"],"ubuntu-22.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"],"windows-11-arm":["self-hosted","Windows","ARM64","asd-ci"],"macos-latest":["self-hosted","macOS","ARM64","asd-ci"],"macos-14":["self-hosted","macOS","ARM64","asd-ci"],"macos-15":["self-hosted","macOS","ARM64","asd-ci"],"macos-15-xlarge":["self-hosted","macOS","ARM64","asd-ci"],"macos-13":["self-hosted","macOS","X64","asd-ci"],"macos-15-intel":["self-hosted","macOS","X64","asd-ci"]}')[matrix.os] }}
+        os: ["ubuntu-24.04", "windows-latest"]
+    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"]}')[matrix.os] }}
     timeout-minutes: 90
     env:
       CARGO_TERM_COLOR: always

@@ -203,7 +203,7 @@ jobs:
           app-title: ${{ inputs.app-title }}
 
   macos:
-    if: ${{ github.repository_owner == 'mamankub' && github.actor == 'mamankub' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    if: ${{ false && github.repository_owner == 'mamankub' }} # Owner paused non-Linux/Windows-x64 coverage (2026-11-10).
     timeout-minutes: 90
     name: macOS universal
     needs: [version]
@@ -328,8 +328,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { arch: x64, target: x86_64-pc-windows-msvc }
-          - { arch: arm64, target: aarch64-pc-windows-msvc }
+          [{"arch": "x64", "target": "x86_64-pc-windows-msvc"}]
     env:
       CARGO_TERM_COLOR: always
       CARGO_INCREMENTAL: 0
@@ -429,13 +428,12 @@ jobs:
     # The signing key lives in the release environment, as it does for the macOS, Windows and
     # flatpak jobs; without this the Linux packages are built unsigned.
     environment: release
-    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"ubuntu-24.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-24.04"],"ubuntu-22.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"],"windows-11-arm":["self-hosted","Windows","ARM64","asd-ci"],"macos-latest":["self-hosted","macOS","ARM64","asd-ci"],"macos-14":["self-hosted","macOS","ARM64","asd-ci"],"macos-15":["self-hosted","macOS","ARM64","asd-ci"],"macos-15-xlarge":["self-hosted","macOS","ARM64","asd-ci"],"macos-13":["self-hosted","macOS","X64","asd-ci"],"macos-15-intel":["self-hosted","macOS","X64","asd-ci"]}')[matrix.runner] }}
+    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"]}')[matrix.runner] }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { arch: x86_64, runner: ubuntu-22.04, deb: amd64 }
-          - { arch: aarch64, runner: ubuntu-22.04-arm, deb: arm64 }
+          [{"arch": "x86_64", "runner": "ubuntu-22.04", "deb": "amd64"}]
     env:
       CARGO_TERM_COLOR: always
       CARGO_INCREMENTAL: 0
@@ -518,7 +516,7 @@ jobs:
     timeout-minutes: 90
     name: Flatpak ${{ matrix.arch }}
     needs: [version, linux]
-    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"ubuntu-24.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-24.04"],"ubuntu-22.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"],"windows-11-arm":["self-hosted","Windows","ARM64","asd-ci"],"macos-latest":["self-hosted","macOS","ARM64","asd-ci"],"macos-14":["self-hosted","macOS","ARM64","asd-ci"],"macos-15":["self-hosted","macOS","ARM64","asd-ci"],"macos-15-xlarge":["self-hosted","macOS","ARM64","asd-ci"],"macos-13":["self-hosted","macOS","X64","asd-ci"],"macos-15-intel":["self-hosted","macOS","X64","asd-ci"]}')[matrix.runner] }}
+    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"]}')[matrix.runner] }}
     # LINUX_SIGNING_KEY comes from the repo's release environment, as the macOS secrets do.
     environment: release
     permissions:
@@ -528,8 +526,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { arch: x86_64, runner: ubuntu-24.04 }
-          - { arch: aarch64, runner: ubuntu-24.04-arm }
+          [{"arch": "x86_64", "runner": "ubuntu-24.04"}]
     env:
       CARGO_TERM_COLOR: always
       CARGO_INCREMENTAL: 0
@@ -654,7 +651,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86_64, aarch64]
+        arch: ["x86_64"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -693,7 +690,7 @@ jobs:
 
   freebsd:
     name: FreeBSD ${{ matrix.arch }}
-    if: ${{ (inputs.has-freebsd) && (github.repository_owner == 'mamankub' && github.actor == 'mamankub' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)) }}
+    if: ${{ false && github.repository_owner == 'mamankub' }} # Owner paused non-Linux/Windows-x64 coverage (2026-11-10).
     needs: [version]
     runs-on: ["self-hosted", "Linux", "X64", "asd-ci", "ubuntu-24.04"]
     timeout-minutes: 300
@@ -701,7 +698,7 @@ jobs:
       fail-fast: false
       matrix:
         # aarch64 is in the default freebsd-architectures; callers can narrow it (#39).
-        arch: ${{ fromJSON(inputs.freebsd-architectures) }}
+        arch: ["x86_64"]
     env:
       APP_NAME: ${{ inputs.app-name }}
       CARGO_HOME: /var/tmp/craft-cargo
@@ -998,7 +995,7 @@ jobs:
   linux-riscv64:
     timeout-minutes: 90
     name: Linux riscv64
-    if: ${{ (inputs.has-riscv64) && (github.repository_owner == 'mamankub' && github.actor == 'mamankub' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)) }}
+    if: ${{ false && github.repository_owner == 'mamankub' }} # Owner paused non-Linux/Windows-x64 coverage (2026-11-10).
     needs: [version]
     environment: release
     # Not 22.04 like the other Linux jobs: Ubuntu never built jammy's ncurses security update for
@@ -1095,13 +1092,12 @@ jobs:
     name: Server Linux ${{ matrix.arch }}
     if: ${{ (inputs.has-server) && (github.repository_owner == 'mamankub' && github.actor == 'mamankub' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)) }}
     needs: [version]
-    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"ubuntu-24.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-24.04"],"ubuntu-22.04-arm":["self-hosted","Linux","ARM64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"],"windows-11-arm":["self-hosted","Windows","ARM64","asd-ci"],"macos-latest":["self-hosted","macOS","ARM64","asd-ci"],"macos-14":["self-hosted","macOS","ARM64","asd-ci"],"macos-15":["self-hosted","macOS","ARM64","asd-ci"],"macos-15-xlarge":["self-hosted","macOS","ARM64","asd-ci"],"macos-13":["self-hosted","macOS","X64","asd-ci"],"macos-15-intel":["self-hosted","macOS","X64","asd-ci"]}')[matrix.runner] }}
+    runs-on: ${{ fromJSON('{"ubuntu-latest":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-24.04":["self-hosted","Linux","X64","asd-ci","ubuntu-24.04"],"ubuntu-22.04":["self-hosted","Linux","X64","asd-ci","ubuntu-22.04"],"windows-latest":["self-hosted","Windows","X64","asd-ci"],"windows-2022":["self-hosted","Windows","X64","asd-ci"],"windows-2025":["self-hosted","Windows","X64","asd-ci"]}')[matrix.runner] }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { arch: x86_64, runner: ubuntu-22.04 }
-          - { arch: aarch64, runner: ubuntu-22.04-arm }
+          [{"arch": "x86_64", "runner": "ubuntu-22.04"}]
     env:
       CARGO_TERM_COLOR: always
       CARGO_INCREMENTAL: 0
